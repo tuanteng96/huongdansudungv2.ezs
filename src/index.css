@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Core */
+
+@layer base {
+    *,
+     :after,
+     :before {
+        box-sizing: border-box;
+        border: 0 solid #ebedf3;
+    }
+}
+
+html,
+body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 14px;
+    @apply w-full h-full text-gray-800
+}
+
+#root {
+    @apply w-full h-full
+}
