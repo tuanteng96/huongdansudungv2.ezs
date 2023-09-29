@@ -1,4 +1,5 @@
 import PostsAPI from "_ezs/api/posts";
+import moment from "moment";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 
@@ -18,8 +19,8 @@ function GuideLists() {
   });
 
   return (
-    <div className="px-8 pt-8">
-      <div className="mb-6 text-2xl font-bold flex">
+    <div className="px-8 pt-7">
+      <div className="flex mb-6 text-2xl font-bold">
         <svg
           className="w-6 mr-1"
           viewBox="0 0 24 24"
@@ -37,10 +38,9 @@ function GuideLists() {
             <polygon points="10 14.65 15 12 10 9.35 10 14.65" fill="#fff" />
           </g>
         </svg>
-
-        {data?.Taxonomy?.name}
+        <span dangerouslySetInnerHTML={{ __html: data?.Taxonomy?.name }}></span>
       </div>
-      <div className="grid grid-cols-5 gap-5">
+      <div className="grid grid-cols-3 gap-6 xxl:grid-cols-5">
         {data?.List &&
           data?.List.map((item, index) => (
             <div className="cursor-pointer" key={index}>
@@ -57,9 +57,11 @@ function GuideLists() {
                   className="text-[15px] leading-6 font-bold mb-1"
                 ></div>
                 <div className="font-medium text-muted text-[13px]">
-                  <span>{data?.Taxonomy?.name}</span>
-                  <span className="px-1">•</span>
-                  <span>{item.date}</span>
+                  <span>
+                    {moment(item.date).format(
+                      "[Đăng lúc ] HH:mm, [Ngày] DD MMM yyyy"
+                    )}
+                  </span>
                 </div>
               </div>
             </div>

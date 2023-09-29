@@ -16,8 +16,7 @@
 html,
 body {
     font-family: 'Be Vietnam Pro', sans-serif;
-    font-size: 14px;
-    @apply w-full h-full text-gray-800
+    @apply w-full h-full text-gray-800 text-sm
 }
 
 #root {

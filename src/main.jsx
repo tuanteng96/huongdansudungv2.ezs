@@ -2,9 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App/App.jsx";
 import "./_ezs/assets/plugins/perfect-scrollbar/perfect-scrollbar.css";
+import "lightgallery.js/dist/css/lightgallery.css";
+
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "react-query";
 
+import "moment/dist/locale/vi";
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
