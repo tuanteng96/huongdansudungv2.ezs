@@ -40,10 +40,11 @@ export default {
                 mini: ['0.65rem', "1rem"]
             },
             boxShadow: {
+                "3xl": '0px 0px 50px 0px rgba(82, 63, 105, 0.15)',
                 lg: '0px 0px 50px 0px rgba(82, 63, 105, 0.15)',
                 sm: '0px 0px 20px 0px rgba(76, 87, 125, 0.02)'
             }
         }
     },
-    plugins: [],
+    plugins: [require('tailwind-scrollbar')({ nocompatible: true })],
 }

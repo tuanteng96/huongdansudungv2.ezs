@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import ProviderLayout from "./ProviderLayout";
+import { ProviderLayout } from "./ProviderLayout";
 
 function RootLayout() {
   return (

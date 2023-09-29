@@ -8,6 +8,7 @@ import {
 import { RootLayout } from "../../_ezs/layout";
 import GuidePage from "../pages/Guide";
 import GuideLists from "../pages/Guide/pages/Lists";
+import GuideDetail from "App/pages/Guide/pages/Detail";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -15,7 +16,8 @@ const router = createBrowserRouter(
       <Route index element={<Navigate to="/huong-dan" replace />} />
       <Route path="huong-dan" element={<GuidePage />}>
         <Route index element={<Navigate to="pos-quan-ly" replace />} />
-        <Route path=":slug" element={<GuideLists />} />
+        <Route path=":slug" element={<GuideLists />}></Route>
+        <Route path=":cate/:slug" element={<GuideDetail />} />
       </Route>
     </Route>
   )

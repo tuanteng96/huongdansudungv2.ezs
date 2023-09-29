@@ -1,4 +1,4 @@
-import ProviderLayout from "./ProviderLayout";
+import { ProviderLayout, useLayout } from "./ProviderLayout";
 import RootLayout from "./RootLayout";
 
-export { ProviderLayout, RootLayout };
+export { ProviderLayout, RootLayout, useLayout };
