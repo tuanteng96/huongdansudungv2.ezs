@@ -6,6 +6,7 @@ import PostsAPI from "../api/posts";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import Avatar from "../assets/images/ezslogo.png";
 
 const perfectScrollbarOptions = {
   wheelSpeed: 2,
@@ -55,15 +56,11 @@ function SidebarPage() {
         >
           <div className="flex flex-col items-center p-5 border-b">
             <div>
-              <img
-                className="rounded-full w-[75px]"
-                src="https://preview.keenthemes.com/metronic/theme/html/demo1/dist/assets/media/users/300_21.jpg"
-                alt=""
-              />
+              <img className="rounded-full w-[75px]" src={Avatar} alt="EZS.VN" />
             </div>
             <div className="uppercase font-bold text-sm mt-4">Admin System</div>
             <div className="text-xs text-center text-danger font-medium mt-1">
-              <div>Cser Hà Nội</div>
+              <div>EZS Hà Nội</div>
               <div className="flex items-end">
                 Administrator <ChevronDownIcon className="w-3 ml-1.5" />
               </div>

@@ -1,63 +1,146 @@
 import PostsAPI from "_ezs/api/posts";
 import moment from "moment";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { useQuery } from "react-query";
-import { Link, useParams } from "react-router-dom";
+import { useInfiniteQuery, useQuery } from "react-query";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Helmet } from "react-helmet-async";
+import { useState } from "react";
+import { formatArray } from "_ezs/utils/formatArray";
+import useInfiniteScroll from "react-infinite-scroll-hook";
+import useQueryParams from "_ezs/hooks/useQueryParams";
+import { clsx } from "clsx";
 
 function GuideLists() {
+  const [TaxonomyInfo, setTaxonomyInfo] = useState();
   const { slug } = useParams();
-  const { data, isLoading } = useQuery({
-    queryKey: ["TaxonomysList", slug],
+  const queryParams = useQueryParams();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const Taxonomy = useQuery({
+    queryKey: ["TaxonomysInfo", slug],
     queryFn: async () => {
-      const { data: Taxonomy } = await PostsAPI.getTaxonomySlug(slug);
-      const { data: List } = await PostsAPI.getPostList(Taxonomy[0].id);
-      return {
-        Taxonomy: Taxonomy[0],
-        List,
-      };
+      const { data } = await PostsAPI.getTaxonomySlug(slug);
+      return data && data.length > 0 ? data[0] : null;
     },
     enabled: Boolean(slug),
+    onSuccess: (data) => {
+      setTaxonomyInfo(data);
+    },
   });
 
+  const Tags = useQuery({
+    queryKey: ["TaxonomyTags", TaxonomyInfo?.id],
+    queryFn: async () => {
+      const { data } = await PostsAPI.getCategories(
+        `parent=${TaxonomyInfo?.id}`
+      );
+      return data;
+    },
+    enabled: Boolean(TaxonomyInfo?.id),
+  });
+
+  const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteQuery({
+    queryKey: ["TaxonomysList", { id: TaxonomyInfo?.id, queryParams }],
+    queryFn: async ({ pageParam = 1 }) => {
+      const { data, Totalpages } = await PostsAPI.getPosts(
+        `page=${pageParam}&per_page=20&categories=${
+          queryParams.tag ? queryParams.tag : TaxonomyInfo?.id
+        }`
+      );
+      return {
+        data: data,
+        Pi: pageParam,
+        Totalpages,
+      };
+    },
+    getNextPageParam: (lastPage, pages) => {
+      return lastPage.Pi === lastPage.Totalpages ? undefined : lastPage.Pi + 1;
+    },
+    enabled: Boolean(TaxonomyInfo?.id),
+  });
+
+  const Lists = formatArray.useInfiniteQuery(data?.pages);
+
+  const [sentryRef, { rootRef }] = useInfiniteScroll({
+    loading: isLoading,
+    hasNextPage: hasNextPage,
+    onLoadMore: fetchNextPage,
+    //disabled: !!error,
+  });
   return (
     <>
       <Helmet>
-        <title>{isLoading ? "Đang tải ..." : data?.Taxonomy?.name}</title>
+        <title>
+          {Taxonomy?.isLoading
+            ? "Đang tải ..."
+            : TaxonomyInfo?.name || "Không tìm thấy"}
+        </title>
       </Helmet>
-      <div className="px-3 md:px-8 py-3 md:py-7 h-full overflow-auto">
-        <div className="flex mb-6 text-xl md:text-2xl font-bold">
-          {!isLoading && (
-            <>
-              <svg
-                className="w-6 mr-1"
-                viewBox="0 0 24 24"
-                focusable="false"
-                style={{
-                  pointerEvents: "none",
-                  display: "block",
-                }}
+      <div
+        className="px-3 md:px-8 py-3 md:py-7 h-full overflow-auto"
+        ref={rootRef}
+      >
+        <div className="mb-6">
+          <div className="text-xl md:text-2xl font-bold flex">
+            {!Taxonomy?.isLoading && (
+              <>
+                <svg
+                  className="w-6 mr-1"
+                  viewBox="0 0 24 24"
+                  focusable="false"
+                  style={{
+                    pointerEvents: "none",
+                    display: "block",
+                  }}
+                >
+                  <g>
+                    <path
+                      d="M17.77,10.32l-1.2-.5L18,9.06a3.74,3.74,0,0,0-3.5-6.62L6,6.94a3.74,3.74,0,0,0,.23,6.74l1.2.49L6,14.93a3.75,3.75,0,0,0,3.5,6.63l8.5-4.5a3.74,3.74,0,0,0-.23-6.74Z"
+                      fill="red"
+                    />
+                    <polygon
+                      points="10 14.65 15 12 10 9.35 10 14.65"
+                      fill="#fff"
+                    />
+                  </g>
+                </svg>
+                <span
+                  dangerouslySetInnerHTML={{ __html: TaxonomyInfo?.name }}
+                ></span>
+              </>
+            )}
+            {Taxonomy?.isLoading && (
+              <div className="animate-pulse">
+                <div className="bg-gray-300 rounded-full w-48 h-7"></div>
+              </div>
+            )}
+          </div>
+          {Tags?.data && Tags?.data.length > 0 && (
+            <div className="flex flex-wrap mt-3">
+              <div
+                className={clsx(
+                  "border mr-3 px-3.5 py-2 cursor-pointer rounded font-semibold transition mb-2",
+                  !queryParams?.tag && "border-primary text-primary"
+                )}
+                onClick={() => navigate(pathname)}
               >
-                <g>
-                  <path
-                    d="M17.77,10.32l-1.2-.5L18,9.06a3.74,3.74,0,0,0-3.5-6.62L6,6.94a3.74,3.74,0,0,0,.23,6.74l1.2.49L6,14.93a3.75,3.75,0,0,0,3.5,6.63l8.5-4.5a3.74,3.74,0,0,0-.23-6.74Z"
-                    fill="red"
-                  />
-                  <polygon
-                    points="10 14.65 15 12 10 9.35 10 14.65"
-                    fill="#fff"
-                  />
-                </g>
-              </svg>
-              <span
-                dangerouslySetInnerHTML={{ __html: data?.Taxonomy?.name }}
-              ></span>
-            </>
-          )}
-          {isLoading && (
-            <div className="animate-pulse">
-              <div className="bg-gray-300 rounded-full w-48 h-7"></div>
+                Tất cả
+              </div>
+              {Tags?.data &&
+                Tags.data.map((tag, index) => (
+                  <div
+                    className={clsx(
+                      "border mr-3 px-3.5 py-2 cursor-pointer rounded font-semibold transition mb-2",
+                      Number(queryParams?.tag) === tag.id &&
+                        "border-primary text-primary"
+                    )}
+                    key={index}
+                    onClick={() => navigate(`${pathname}?tag=${tag.id}`)}
+                  >
+                    <div dangerouslySetInnerHTML={{ __html: tag?.name }}></div>
+                  </div>
+                ))}
             </div>
           )}
         </div>
@@ -80,12 +163,13 @@ function GuideLists() {
               ))}
           {!isLoading && (
             <>
-              {data?.List &&
-                data?.List.map((item, index) => (
+              {Lists &&
+                Lists.map((item, index) => (
                   <Link
                     className="cursor-pointer block"
                     to={item.slug}
                     key={index}
+                    ref={sentryRef}
                   >
                     <div className="aspect-[180/101]">
                       <LazyLoadImage

@@ -19,7 +19,7 @@ function HeaderPage() {
     queryKey: ["DetailSlug", query],
     queryFn: async () => {
       const { data } = await PostsAPI.getPosts(
-        `?search=adadadad&categories=70&_embed=wp:term`
+        `search=${query}&categories=70&_embed=wp:term`
       );
       return data;
     },
