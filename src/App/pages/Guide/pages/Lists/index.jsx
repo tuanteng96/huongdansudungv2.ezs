@@ -33,9 +33,11 @@ function GuideLists() {
     queryKey: ["TaxonomyTags", TaxonomyInfo?.id],
     queryFn: async () => {
       const { data } = await PostsAPI.getCategories(
-        `parent=${TaxonomyInfo?.id}`
+        `parent=${TaxonomyInfo?.id}&per_page=50`
       );
-      return data;
+      return data
+        ? data.sort((a, b) => Number(a.acf.vi_tri) - Number(b.acf.vi_tri))
+        : [];
     },
     enabled: Boolean(TaxonomyInfo?.id),
   });
