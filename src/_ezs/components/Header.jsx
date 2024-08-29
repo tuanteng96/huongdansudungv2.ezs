@@ -49,7 +49,7 @@ function HeaderPage() {
         <Link className="flex items-center justify-center h-full" to="/">
           <img
             className="w-[70px]"
-            src="https://cser.vn/admin/themes/images/logo_ezs.png"
+            src="https://cserbeauty.com/admin/themes/images/logo_ezs.png"
             alt=""
           />
         </Link>

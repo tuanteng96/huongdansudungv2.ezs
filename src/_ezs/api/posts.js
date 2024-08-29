@@ -2,7 +2,7 @@ import http from "../utils/http";
 
 const PostsAPI = {
     getTaxonomy: (id) =>
-        http.get(`/wp-json/wp/v2/categories?parent=${id}&per_page=50`),
+        http.get(`/wp-json/wp/v2/categories?parent=${id}&per_page=20`),
     getTaxonomySlug: (slug) =>
         http.get(`/wp-json/wp/v2/categories?per_page=50&slug=${slug}`),
     getPostList: (id) =>

@@ -3,12 +3,12 @@ import axios from "axios";
 class Http {
     constructor() {
         this.instance = axios.create({
-            baseURL: "https://ezs.vn",
-            timeout: 50000,
-            headers: {
-                "content-type": "text/plain",
-            },
-            withCredentials: true,
+          baseURL: "https://ezs.vn",
+          timeout: 50000,
+          headers: {
+            "content-type": "application/json",
+          },
+          withCredentials: true,
         });
         this.instance.interceptors.request.use(
             (config) => {

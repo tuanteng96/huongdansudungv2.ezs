@@ -7,7 +7,13 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import "moment/dist/locale/vi";
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

@@ -7,6 +7,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Avatar from "../assets/images/ezslogo.png";
+import { JSONSidebar } from "_ezs/utils/SidebarMenuJSON";
 
 const perfectScrollbarOptions = {
   wheelSpeed: 2,
@@ -15,7 +16,7 @@ const perfectScrollbarOptions = {
 
 function SidebarPage() {
   const { pathname } = useLocation();
-
+  
   const { data } = useQuery({
     queryKey: ["Taxonomys"],
     queryFn: async () => {
