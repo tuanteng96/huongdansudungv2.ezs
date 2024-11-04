@@ -110,7 +110,7 @@ function SidebarPage() {
                     {item.children &&
                       item.children.map((sub, i) => (
                         <MenuItem
-                          component={<Link to={`huong-dan/${sub.slug}`} />}
+                          component={<Link to={`${sub.slug}`} />}
                           key={i}
                           className="border-t normal-case text-gray-700 font-semibold"
                           active={pathname.includes(sub.slug)}
