@@ -1,4 +1,8 @@
-import { ChevronLeftIcon } from "@heroicons/react/24/outline";
+import {
+  Bars4Icon,
+  ChevronLeftIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import PostsAPI from "_ezs/api/posts";
 import clsx from "clsx";
 import React, { useRef, useState } from "react";
@@ -13,6 +17,7 @@ function QuickDetail(props) {
   const navigate = useNavigate();
 
   const [active, setActive] = useState(0);
+  const [open, setOpen] = useState(false);
 
   let sliderRef = useRef(null);
 
@@ -37,11 +42,16 @@ function QuickDetail(props) {
     beforeChange: (current, next) => setActive(next),
   };
   return (
-    <div className="h-full w-full flex">
+    <div className="h-full w-full flex relative">
       <Helmet>
         <title>{isLoading ? "Đang tải ..." : data?.title?.rendered}</title>
       </Helmet>
-      <div className="w-[320px] border-r h-full flex-col hidden md:flex">
+      <div
+        className={clsx(
+          "w-[320px] border-r h-full flex-col md:relative md:flex absolute left-0 top-0 z-10 bg-white",
+          open ? "flex" : "hidden"
+        )}
+      >
         <div
           className="h-16 px-4 flex items-center bg-[#F3F6F9] border-b cursor-pointer"
           onClick={() => navigate(-1)}
@@ -51,6 +61,13 @@ function QuickDetail(props) {
             className="uppercase font-bold ml-2.5 text-[14px] leading-4 flex-1 truncate"
             dangerouslySetInnerHTML={{ __html: data?.title?.rendered }}
           ></div>
+          <XMarkIcon
+            className="w-6 md:hidden"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+            }}
+          />
         </div>
         <div className="overflow-auto grow">
           {data?.items &&
@@ -73,7 +90,10 @@ function QuickDetail(props) {
             ))}
         </div>
       </div>
-      <div className="md:w-[calc(100%-320px)] h-full overflow-hidden relative" id="container-slider">
+      <div
+        className="w-full md:w-[calc(100%-320px)] h-full overflow-hidden relative"
+        id="container-slider"
+      >
         <Slider
           {...settings}
           ref={(slider) => {
@@ -121,7 +141,27 @@ function QuickDetail(props) {
             Tiếp theo
           </button>
         </div>
+        <div className="absolute top-0 left-0 flex justify-between w-full px-4 pt-4 md:hidden">
+          <div
+            className="bg-white/20 px-3 py-3 rounded text-white"
+            onClick={() => navigate(-1)}
+          >
+            <ChevronLeftIcon className="w-6" />
+          </div>
+          <div
+            className="bg-white/20 px-3 py-3 rounded text-white"
+            onClick={() => setOpen(true)}
+          >
+            <Bars4Icon className="w-6" />
+          </div>
+        </div>
       </div>
+      {open && (
+        <div
+          className="absolute w-full h-full top-0 left-0 bg-black/40"
+          onClick={() => setOpen(false)}
+        ></div>
+      )}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { ArrowRightIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 import PostsAPI from "_ezs/api/posts";
 import React from "react";
 import { useQuery } from "react-query";
@@ -24,7 +25,7 @@ function QuickLists() {
           }
         }
       }
-      
+
       return newCate
         .map((x) => ({
           ...x,
@@ -39,44 +40,82 @@ function QuickLists() {
   });
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#eef0f8]">
-      <div className="grow overflow-auto flex">
-        <div className="max-w-screen-xl w-full mx-auto grid md:grid-cols-2 xl:grid-cols-3 md:gap-5 gap-4 p-4">
-          {data &&
-            data.map((item, index) => (
-              <div className="bg-white rounded" key={index}>
-                <div className="p-4 border-b uppercase text-lg font-semibold text-primary">
-                  {item.name}
-                </div>
-                <div className="flex flex-col">
-                  {item.children &&
-                    item.children.map((sub, idx) => (
-                      <Link
-                        className="px-4 py-4 inline-block border-b border-dashed text-black hover:text-primary text-base last:border-0"
-                        to={`${sub.slug}`}
-                        key={idx}
-                      >
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: sub.title.rendered,
-                          }}
-                        ></div>
-                      </Link>
-                    ))}
-                </div>
-              </div>
-            ))}
+    <div className="w-full h-full flex flex-col bg-[#eef0f8] overflow-auto">
+      <div className="pt-10 md:pt-16 md:mb-14 mb-5">
+        <div className="max-w-screen-xl mx-auto text-center px-4">
+          <div className="font-bold text-2xl md:text-[35px] md:leading-[40px] text-[#1d2746]">
+            HƯỚNG DẪN NHANH
+          </div>
+          <div className="text-base text-[#6b707f] md:w-2/4 mx-auto mt-1.5 md:mt-3">
+            Một số nghiệp vụ spa / thẩm mỹ viện thường dùng hàng ngày.
+          </div>
         </div>
       </div>
+      <div className="max-w-screen-xl w-full mx-auto grid md:grid-cols-2 xl:grid-cols-3 md:gap-5 gap-4 p-4">
+        {data &&
+          data.map((item, index) => (
+            <div className="bg-white rounded p-5 md:p-8" key={index}>
+              <div className="mb-3 md:mb-5">
+                <img className="w-12 md:w-[60px]" src={"/memo.png"} alt="" />
+              </div>
+              <div className="py-4 uppercase text-lg font-semibold text-black">
+                {item.name}
+              </div>
+              <div className="flex flex-col">
+                {item.children &&
+                  item.children.map((sub, idx) => (
+                    <Link
+                      className="py-3 pl-7 inline-block text-[#6b707f] hover:text-primary text-base relative"
+                      to={`${sub.slug}`}
+                      key={idx}
+                    >
+                      <div className="absolute left-0">
+                        <DocumentTextIcon className="w-[20px]" />
+                      </div>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: sub.title.rendered,
+                        }}
+                      ></div>
+                    </Link>
+                  ))}
+              </div>
+            </div>
+          ))}
+      </div>
+
       <div className="border-t">
         <div className="flex justify-between max-w-screen-xl p-4 mx-auto text-black font-medium">
-          <div>
-            Hotline
-            <a className="text-primary ml-2" href="tel:0981883338">
-              0981.883.338
-            </a>
+          <div className="bg-white w-full md:flex justify-between items-center md:p-10 p-5">
+            <div className="flex items-center">
+              <div className="md:block hidden">
+                <img src={"/Internet.png"} alt="" />
+              </div>
+              <div className="md:pl-5">
+                <div className="text-xl md:text-3xl text-[#1d2746] mb-2">
+                  Bạn chưa tìm được hướng dẫn cần tìm ?
+                </div>
+                <div className="text-sm md:text-base text-[#6b707f]">
+                  Vui long bấm link dưới đây để xem bản hướng dẫn đầy đủ
+                  <Link
+                    className="text-primary ml-2 inline-block"
+                    to="https://huongdan.ezs.vn"
+                  >
+                    https://huongdan.ezs.vn
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <a
+                className="bg-primary text-white text-base flex md:justify-start justify-center h-[54px] rounded items-center px-5 hover:shadow-3xl"
+                href="https://zalo.me/0981883338"
+              >
+                Hỗ trợ trực tiếp qua Zalo
+                <ArrowRightIcon className="w-6 ml-2" />
+              </a>
+            </div>
           </div>
-          <div>EZS.VN</div>
         </div>
       </div>
     </div>
