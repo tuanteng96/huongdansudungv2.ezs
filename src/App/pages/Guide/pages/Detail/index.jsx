@@ -16,7 +16,7 @@ function GuideDetail() {
       const { data: List } = await PostsAPI.getPosts(
         `id=${Post[0].categories[Post[0].categories.length - 1]}&exclude=${
           Post[0].id
-        }&page=1&per_page=6`
+        }&page=1&per_page=6&categories=70`
       );
       return {
         Post: Post[0],
