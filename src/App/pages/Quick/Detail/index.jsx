@@ -42,7 +42,7 @@ function QuickDetail(props) {
     beforeChange: (current, next) => setActive(next),
   };
   return (
-    <div className="h-full w-full flex relative">
+    <div className="relative flex w-full h-full">
       <Helmet>
         <title>{isLoading ? "Đang tải ..." : data?.title?.rendered}</title>
       </Helmet>
@@ -58,7 +58,7 @@ function QuickDetail(props) {
         >
           <ChevronLeftIcon className="w-6" />
           <div
-            className="uppercase font-bold ml-2.5 text-[14px] leading-4 flex-1 truncate"
+            className="uppercase font-bold ml-2.5 text-[14px] leading-5 flex-1 truncate"
             dangerouslySetInnerHTML={{ __html: data?.title?.rendered }}
           ></div>
           <XMarkIcon
@@ -105,12 +105,12 @@ function QuickDetail(props) {
               <div key={index}>
                 <img
                   src={item.Image}
-                  className="h-screen w-full object-cover"
+                  className="object-cover w-full h-screen"
                 />
               </div>
             ))}
         </Slider>
-        <div className="absolute bottom-5 right-5 gap-3 flex justify-end">
+        <div className="absolute flex justify-end gap-3 bottom-5 right-5">
           {data?.items && data?.items[active] && data?.items[active].Note && (
             <PickerQuick Image={data?.items[active].Note}>
               {({ open }) => (
@@ -143,13 +143,13 @@ function QuickDetail(props) {
         </div>
         <div className="absolute top-0 left-0 flex justify-between w-full px-4 pt-4 md:hidden">
           <div
-            className="bg-white/20 px-3 py-3 rounded text-white"
+            className="px-3 py-3 text-white rounded bg-white/20"
             onClick={() => navigate(-1)}
           >
             <ChevronLeftIcon className="w-6" />
           </div>
           <div
-            className="bg-white/20 px-3 py-3 rounded text-white"
+            className="px-3 py-3 text-white rounded bg-white/20"
             onClick={() => setOpen(true)}
           >
             <Bars4Icon className="w-6" />
@@ -158,7 +158,7 @@ function QuickDetail(props) {
       </div>
       {open && (
         <div
-          className="absolute w-full h-full top-0 left-0 bg-black/40"
+          className="absolute top-0 left-0 w-full h-full bg-black/40"
           onClick={() => setOpen(false)}
         ></div>
       )}
