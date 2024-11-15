@@ -41,8 +41,8 @@ function QuickLists() {
 
   return (
     <div className="w-full h-full flex flex-col bg-[#eef0f8] overflow-auto">
-      <div className="pt-10 md:pt-16 md:mb-14 mb-5">
-        <div className="max-w-screen-xl mx-auto text-center px-4">
+      <div className="pt-10 mb-5 md:pt-16 md:mb-14">
+        <div className="max-w-screen-xl px-4 mx-auto text-center">
           <div className="font-bold text-2xl md:text-[35px] md:leading-[40px] text-[#1d2746]">
             HƯỚNG DẪN NHANH
           </div>
@@ -51,14 +51,14 @@ function QuickLists() {
           </div>
         </div>
       </div>
-      <div className="max-w-screen-xl w-full mx-auto grid md:grid-cols-2 xl:grid-cols-3 md:gap-5 gap-4 p-4">
+      <div className="grid w-full max-w-screen-xl gap-4 p-4 mx-auto md:grid-cols-2 xl:grid-cols-3 md:gap-5">
         {data &&
           data.map((item, index) => (
-            <div className="bg-white rounded p-5 md:p-8" key={index}>
+            <div className="p-5 bg-white rounded md:p-8" key={index}>
               <div className="mb-3 md:mb-5">
-                <img className="w-12 md:w-[60px]" src={"/memo.png"} alt="" />
+                <img className="w-12 md:w-[60px]" src={item?.acf?.file_mp3 ? item?.acf?.file_mp3 : "/memo.png"} alt="" />
               </div>
-              <div className="py-4 uppercase text-lg font-semibold text-black">
+              <div className="py-4 text-lg font-semibold text-black uppercase">
                 {item.name}
               </div>
               <div className="flex flex-col">
@@ -85,10 +85,10 @@ function QuickLists() {
       </div>
 
       <div className="border-t">
-        <div className="flex justify-between max-w-screen-xl p-4 mx-auto text-black font-medium">
-          <div className="bg-white w-full md:flex justify-between items-center md:p-10 p-5">
+        <div className="flex justify-between max-w-screen-xl p-4 mx-auto font-medium text-black">
+          <div className="items-center justify-between w-full p-5 bg-white md:flex md:p-10">
             <div className="flex items-center">
-              <div className="md:block hidden">
+              <div className="hidden md:block">
                 <img src={"/Internet.png"} alt="" />
               </div>
               <div className="md:pl-5">
@@ -98,7 +98,7 @@ function QuickLists() {
                 <div className="text-sm md:text-base text-[#6b707f]">
                   Vui long bấm link dưới đây để xem bản hướng dẫn đầy đủ
                   <Link
-                    className="text-primary ml-2 inline-block"
+                    className="inline-block ml-2 text-primary"
                     to="https://huongdan.ezs.vn"
                   >
                     https://huongdan.ezs.vn

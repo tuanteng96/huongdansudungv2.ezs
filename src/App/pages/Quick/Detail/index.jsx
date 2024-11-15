@@ -102,10 +102,10 @@ function QuickDetail(props) {
         >
           {data?.items &&
             data.items.map((item, index) => (
-              <div key={index}>
+              <div className="h-screen bg-[#2d3334]" key={index}>
                 <img
                   src={item.Image}
-                  className="object-cover w-full h-screen"
+                  className="object-cover w-full"
                 />
               </div>
             ))}
