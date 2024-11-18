@@ -55,7 +55,7 @@ function QuickDetail(props) {
         >
           <div
             className="h-16 px-4 flex items-center bg-[#F3F6F9] border-b cursor-pointer"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/quicks")}
           >
             <ChevronLeftIcon className="w-6" />
             <div
@@ -139,10 +139,10 @@ function QuickDetail(props) {
               Tiếp theo
             </button>
           </div>
-          <div className="absolute top-0 left-0 flex justify-between w-full px-4 pt-4 md:hidden">
+          <div className="absolute top-0 left-0 z-50 flex justify-between w-full px-4 pt-4 md:hidden">
             <div
               className="px-3 py-3 text-white rounded bg-white/20"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/quicks")}
             >
               <ChevronLeftIcon className="w-6" />
             </div>
