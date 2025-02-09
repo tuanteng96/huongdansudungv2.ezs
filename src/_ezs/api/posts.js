@@ -9,6 +9,7 @@ const PostsAPI = {
     http.get(`/wp-json/wp/v2/posts?page=1&per_page=50&categories=${id}`),
   getDetailPostSlug: (slug) => http.get(`/wp-json/wp/v2/posts?slug=${slug}`),
   getPosts: (params) => http.get(`/wp-json/wp/v2/posts?${params}`),
+  getPostsId: (id) => http.get(`/wp-json/wp/v2/posts/${id}`),
   getCategories: (params) => http.get(`/wp-json/wp/v2/categories?${params}`),
   getCategorie: (id) => http.get(`/wp-json/wp/v2/${id}`),
 };
