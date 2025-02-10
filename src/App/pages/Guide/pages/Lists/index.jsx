@@ -209,9 +209,9 @@ function GuideLists() {
             </div>
           )}
         </div>
-        <div className="flex flex-col w-full gap-4 lg:gap-10 lg:flex-row">
+        <div className="flex flex-col w-full gap-4 lg:gap-20 lg:flex-row">
           {Quicks && Quicks.length > 0 && (
-            <div className="h-full overflow-auto lg:w-[320px] lg:min-w-[320px] mt-6">
+            <div className="h-full overflow-auto lg:w-[400px] lg:min-w-[400px] mt-6">
               <div className="pb-3.5 mb-3.5 border-b">
                 {Quicks.filter((x) => x.acf.status === "1").map(
                   (item, index) => (

@@ -6,7 +6,7 @@ import { useLayout } from "_ezs/layout";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 function HeaderPage() {
   const [isFocus, setIsFocus] = useState(false);
@@ -14,6 +14,8 @@ function HeaderPage() {
   const [value, setValue] = useState();
   const navigate = useNavigate();
   const { openSidebar } = useLayout();
+
+  const { pathname, search } = useLocation();
 
   const { data, isLoading } = useQuery({
     queryKey: ["DetailSlug", query],
@@ -43,6 +45,37 @@ function HeaderPage() {
     navigate(toLink(e));
   };
 
+  const arrTop = [
+    {
+      Title: "Chấm công",
+      Href: "/huong-dan/cong-ca?tag=150",
+    },
+    {
+      Title: "Bán hàng / tích thẻ",
+      Href: "/huong-dan/pos-quan-ly",
+    },
+    {
+      Title: "Nhập xuất kho",
+      Href: "/huong-dan/kho-hang-ton-kho-hang-ton",
+    },
+    {
+      Title: "Xem báo cáo",
+      Href: "/huong-dan/tong-quan",
+    },
+    {
+      Title: "Quản lý SP/DV",
+      Href: "/huong-dan/cai-dat-quan-ly-sp-dv",
+    },
+    {
+      Title: "Khuyến mại",
+      Href: "/huong-dan/khuyen-mai",
+    },
+    {
+      Title: "Voucher",
+      Href: "/huong-dan/voucher-coupon",
+    },
+  ];
+
   return (
     <div className="h-[62px] border-b flex relative z-10">
       <div className="w-[200px] md:block hidden">
@@ -55,23 +88,24 @@ function HeaderPage() {
         </Link>
       </div>
       <div
-        className="md:hidden w-16 flex items-center justify-center border-r"
+        className="flex items-center justify-center w-16 border-r md:hidden"
         onClick={openSidebar}
       >
         <Bars4Icon className="w-7" />
       </div>
-      <div className="relative flex-1 px-5">
-        <div className="h-full relative flex items-center justify-center">
+      <div className="relative flex-1 pl-5 pr-5 lg:pl-0">
+        <div className="relative flex items-center h-full">
           <div
             className={clsx(
-              "border flex rounded-3xl h-12 w-full max-w-[700px] transition relative",
-              isFocus && "border-primary"
+              "border flex rounded-3xl h-12 w-full transition relative",
+              isFocus && "border-primary",
+              isFocus ? "max-w-[600px]" : "lg:max-w-[200px]"
             )}
           >
-            <div className="h-full flex-1">
+            <div className="flex-1 h-full">
               <Combobox value={value?.title?.rendered} onChange={onClick}>
                 <Combobox.Input
-                  className="w-full h-full border-0 outline-none text-base rounded-l-3xl pl-5"
+                  className="w-full h-full pl-5 text-base border-0 outline-none rounded-l-3xl"
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Bạn cần gì ?"
                   onFocus={() => setIsFocus(true)}
@@ -110,8 +144,43 @@ function HeaderPage() {
               <MagnifyingGlassIcon className="w-5 md:w-6" />
             </div>
           </div>
+          {!isFocus && (
+            <div className="justify-end flex-1 gap-2.5 hidden lg:flex">
+              {arrTop &&
+                arrTop.map((item, index) => (
+                  <NavLink
+                    className={({ isActive }) => {
+                      return clsx(
+                        "h-[40px] flex items-center justify-center bg-[#f5f5f9] text-[#6c7293] font-medium px-3.5 rounded hover:text-primary transition-colors",
+                        isActive && "!text-primary"
+                      );
+                    }}
+                    to={item.Href}
+                    key={index}
+                  >
+                    {item.Title}
+                  </NavLink>
+                ))}
+            </div>
+          )}
+          <div className="flex-wrap flex-1 gap-x-2.5 hidden">
+            {arrTop &&
+              arrTop.map((item, index) => (
+                <NavLink
+                  className={({ isActive }) => {
+                    return clsx(
+                      "text-[#6c7293] hover:text-primary transition-colors",
+                      isActive && "!text-primary"
+                    );
+                  }}
+                  to={item.Href}
+                  key={index}
+                >
+                  {item.Title}
+                </NavLink>
+              ))}
+          </div>
         </div>
-        
       </div>
     </div>
   );
