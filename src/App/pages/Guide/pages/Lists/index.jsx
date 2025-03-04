@@ -213,8 +213,9 @@ function GuideLists() {
           {Quicks && Quicks.length > 0 && (
             <div className="h-full overflow-auto lg:w-[400px] lg:min-w-[400px] mt-6">
               <div className="pb-3.5 mb-3.5 border-b">
-                {Quicks.filter((x) => x.acf.status === "1").map(
-                  (item, index) => (
+                {Quicks.filter((x) => x.acf.status === "1")
+                  .sort((a, b) => a.acf.vi_tri - b.acf.vi_tri)
+                  .map((item, index) => (
                     <div className="mb-3 last:mb-0" key={index}>
                       <div
                         className="cursor-pointer group"
@@ -245,8 +246,7 @@ function GuideLists() {
                         </div>
                       </div>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
               <div>
                 <div className="flex text-[14px] leading-[23px] font-semibold uppercase mb-3">
@@ -254,8 +254,9 @@ function GuideLists() {
                   Tình huống
                 </div>
                 <div>
-                  {Quicks.filter((x) => x.acf.status === "2").map(
-                    (item, index) => (
+                  {Quicks.filter((x) => x.acf.status === "2")
+                    .sort((a, b) => a.acf.vi_tri - b.acf.vi_tri)
+                    .map((item, index) => (
                       <div
                         key={index}
                         className="text-[14px] leading-6 text-muted hover:text-primary transition mb-3 last:mb-0 block cursor-pointer"
@@ -277,8 +278,7 @@ function GuideLists() {
                           __html: item?.title?.rendered,
                         }}
                       ></div>
-                    )
-                  )}
+                    ))}
                 </div>
               </div>
             </div>

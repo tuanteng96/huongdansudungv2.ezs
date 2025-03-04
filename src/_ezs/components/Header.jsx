@@ -4,7 +4,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import PostsAPI from "_ezs/api/posts";
 import { useLayout } from "_ezs/layout";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
@@ -15,7 +15,13 @@ function HeaderPage() {
   const navigate = useNavigate();
   const { openSidebar } = useLayout();
 
+  const elRef = useRef();
+
   const { pathname, search } = useLocation();
+
+  useEffect(() => {
+    //elRef?.current?.blur();
+  }, [pathname]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["DetailSlug", query],
@@ -41,6 +47,7 @@ function HeaderPage() {
   };
 
   const onClick = (e) => {
+    console.log("click");
     setValue(e?.title?.rendered);
     navigate(toLink(e));
   };
@@ -103,41 +110,54 @@ function HeaderPage() {
             )}
           >
             <div className="flex-1 h-full">
-              <Combobox value={value?.title?.rendered} onChange={onClick}>
+              <Combobox value={value?.title?.rendered}>
                 <Combobox.Input
+                  ref={elRef}
                   className="w-full h-full pl-5 text-base border-0 outline-none rounded-l-3xl"
-                  onChange={(event) => setQuery(event.target.value)}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                  }}
                   placeholder="Bạn cần gì ?"
-                  onFocus={() => setIsFocus(true)}
-                  onBlur={() => setIsFocus(false)}
+                  onFocus={() => {
+                    setIsFocus(true);
+                  }}
+                  onBlur={() => {
+                    setIsFocus(false);
+                  }}
                 />
-                <Combobox.Options className="bg-white shadow-3xl rounded-2xl mt-2 py-3 max-h-[300px] overflow-auto z-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scrollbar-thumb-rounded">
-                  {isLoading && (
-                    <div className="px-5 py-1 font-semibold md:text-[14px] text-sm">
-                      Đang tìm kiếm ...
-                    </div>
-                  )}
-                  {!isLoading && (
-                    <>
-                      {data &&
-                        data.map((item, index) => (
-                          <Combobox.Option key={index} value={item}>
-                            <div
-                              dangerouslySetInnerHTML={{
-                                __html: item?.title?.rendered,
-                              }}
-                              className="md:text-[14px] text-sm leading-6 font-bold px-5 py-2 cursor-pointer hover:text-primary transition"
-                            ></div>
-                          </Combobox.Option>
-                        ))}
-                      {(!data || data.length === 0) && (
-                        <div className="px-5 py-1 font-semibold md:text-[14px] text-sm">
-                          Không tìm thấy.
-                        </div>
-                      )}
-                    </>
-                  )}
-                </Combobox.Options>
+                {isFocus && (
+                  <Combobox.Options className="bg-white shadow-3xl rounded-2xl mt-2 py-3 max-h-[300px] overflow-auto z-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scrollbar-thumb-rounded">
+                    {isLoading && (
+                      <div className="px-5 py-1 font-semibold md:text-[14px] text-sm">
+                        Đang tìm kiếm ...
+                      </div>
+                    )}
+                    {!isLoading && (
+                      <>
+                        {data &&
+                          data.map((item, index) => (
+                            <Combobox.Option
+                              key={index}
+                              value={item}
+                              onMouseDown={() => onClick(item)}
+                            >
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: item?.title?.rendered,
+                                }}
+                                className="md:text-[14px] text-sm leading-6 font-bold px-5 py-2 cursor-pointer hover:text-primary transition"
+                              ></div>
+                            </Combobox.Option>
+                          ))}
+                        {(!data || data.length === 0) && (
+                          <div className="px-5 py-1 font-semibold md:text-[14px] text-sm">
+                            Không tìm thấy.
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </Combobox.Options>
+                )}
               </Combobox>
             </div>
             <div className="bg-[#F3F6F9] rounded-r-3xl w-[50px] md:w-[70px] border-l cursor-pointer flex items-center justify-center">
