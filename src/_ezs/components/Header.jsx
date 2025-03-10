@@ -20,8 +20,21 @@ function HeaderPage() {
   const { pathname, search } = useLocation();
 
   useEffect(() => {
-    //elRef?.current?.blur();
-  }, [pathname]);
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event) {
+      if (elRef.current && !elRef?.current?.contains(event.target)) {
+        setIsFocus(false);
+      }
+    }
+    // Bind the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [elRef]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["DetailSlug", query],
@@ -47,7 +60,8 @@ function HeaderPage() {
   };
 
   const onClick = (e) => {
-    console.log("click");
+    setIsFocus(false);
+    //setQuery("");
     setValue(e?.title?.rendered);
     navigate(toLink(e));
   };
@@ -108,9 +122,10 @@ function HeaderPage() {
               isFocus && "border-primary",
               isFocus ? "max-w-[600px]" : "lg:max-w-[200px]"
             )}
+            ref={elRef}
           >
             <div className="flex-1 h-full">
-              <Combobox value={value?.title?.rendered}>
+              {/* <Combobox value={value?.title?.rendered}>
                 <Combobox.Input
                   ref={elRef}
                   className="w-full h-full pl-5 text-base border-0 outline-none rounded-l-3xl"
@@ -122,11 +137,18 @@ function HeaderPage() {
                     setIsFocus(true);
                   }}
                   onBlur={() => {
-                    setIsFocus(false);
+                    //setIsFocus(false);
+                  }}
+                  onKeyUp={(e) => {
+                    if (e.key === "Enter" || e.keyCode === 13) {
+                      console.log(e);
+                      setIsFocus(true);
+                    }
                   }}
                 />
                 {isFocus && (
                   <Combobox.Options className="bg-white shadow-3xl rounded-2xl mt-2 py-3 max-h-[300px] overflow-auto z-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scrollbar-thumb-rounded">
+                    adad
                     {isLoading && (
                       <div className="px-5 py-1 font-semibold md:text-[14px] text-sm">
                         Đang tìm kiếm ...
@@ -158,7 +180,52 @@ function HeaderPage() {
                     )}
                   </Combobox.Options>
                 )}
-              </Combobox>
+              </Combobox> */}
+              <input
+                placeholder="Bạn cần tìm ?"
+                type="text"
+                value={query}
+                className="w-full h-full pl-5 text-base border-0 outline-none rounded-l-3xl"
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                }}
+                onFocus={() => {
+                  setIsFocus(true);
+                }}
+              />
+              {isFocus && (
+                <div className="bg-white shadow-3xl rounded-2xl mt-2 py-3 max-h-[300px] overflow-auto z-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scrollbar-thumb-rounded">
+                  {isLoading && (
+                    <div className="px-5 py-1 font-semibold md:text-[14px] text-sm">
+                      Đang tìm kiếm ...
+                    </div>
+                  )}
+                  {!isLoading && (
+                    <>
+                      {data &&
+                        data.map((item, index) => (
+                          <div
+                            key={index}
+                            value={item}
+                            onMouseDown={() => onClick(item)}
+                          >
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: item?.title?.rendered,
+                              }}
+                              className="md:text-[14px] text-sm leading-6 font-bold px-5 py-2 cursor-pointer hover:text-primary transition"
+                            ></div>
+                          </div>
+                        ))}
+                      {(!data || data.length === 0) && (
+                        <div className="px-5 py-1 font-semibold md:text-[14px] text-sm">
+                          Không tìm thấy.
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
             <div className="bg-[#F3F6F9] rounded-r-3xl w-[50px] md:w-[70px] border-l cursor-pointer flex items-center justify-center">
               <MagnifyingGlassIcon className="w-5 md:w-6" />
