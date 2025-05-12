@@ -11,21 +11,112 @@ import {
 } from "react-router-dom";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Helmet } from "react-helmet-async";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatArray } from "_ezs/utils/formatArray";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import useQueryParams from "_ezs/hooks/useQueryParams";
 import { clsx } from "clsx";
-import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
-import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
-import { createPortal } from "react-dom";
-import PickerVideo from "../../components/PickerVideo";
-import { AnimatePresence } from "framer-motion";
-import { isNil, omitBy } from "lodash-es";
+import ModalVideo from "../../components/ModalVideo";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+
+const ItemRender = ({ item }) => {
+  let refMobile = useRef();
+  let refDesktop = useRef();
+
+  return (
+    <>
+      <div
+        className="block p-4 transition-all border rounded shadow cursor-pointer hover:text-primary hover:border-primary min-h-[169px]"
+        onClick={() => {
+          if (item?.acf?.app_id_video_youtube && item?.acf?.id_video_youtube) {
+            Swal.fire({
+              title: "Xem hướng dẫn thao tác trên ?",
+              showDenyButton: true,
+              showCancelButton: false,
+              confirmButtonText: `<svg
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  viewBox="0 0 24 24"
+  strokewidth="{1.5}"
+  stroke="currentColor"
+  classname="size-6"
+>
+  <path
+    strokelinecap="round"
+    strokelinejoin="round"
+    d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"
+  />
+</svg>
+App điện thoại`,
+              denyButtonText: `
+            <svg
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  viewBox="0 0 24 24"
+  strokewidth="{1.5}"
+  stroke="currentColor"
+  classname="size-6"
+>
+  <path
+    strokelinecap="round"
+    strokelinejoin="round"
+    d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25"
+  />
+</svg>
+
+              Máy tính bảng
+            `,
+              cancelButtonText: "Đóng",
+              customClass: {
+                confirmButton: "bg-success",
+                denyButton: "bg-primary",
+                cancelButton: "bg-[#999]",
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                refMobile?.current?.click();
+              } else if (result.isDenied) {
+                refDesktop?.current?.click();
+              }
+            });
+          } else if (item?.acf?.app_id_video_youtube) {
+            refMobile?.current?.click();
+          } else if (item?.acf?.id_video_youtube) {
+            refDesktop?.current?.click();
+          }
+        }}
+      >
+        <div>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: item?.title?.rendered,
+            }}
+            className="text-[15px] leading-[24px] font-medium mb-2 line-clamp-2"
+          ></div>
+          <div
+            className="text-muted text-[14px] font-light leading-6"
+            dangerouslySetInnerHTML={{
+              __html: item?.excerpt?.rendered,
+            }}
+          ></div>
+        </div>
+      </div>
+      {item?.acf?.app_id_video_youtube && (
+        <ModalVideo Src={item?.acf?.app_id_video_youtube}>
+          {({ open }) => <div ref={refMobile} onClick={open}></div>}
+        </ModalVideo>
+      )}
+      {item?.acf?.id_video_youtube && (
+        <ModalVideo Src={item?.acf?.id_video_youtube}>
+          {({ open }) => <div ref={refDesktop} onClick={open}></div>}
+        </ModalVideo>
+      )}
+    </>
+  );
+};
 
 function GuideLists() {
   const [TaxonomyInfo, setTaxonomyInfo] = useState();
-  const [Quicks, setQuicks] = useState([]);
   const { slug } = useParams();
   const queryParams = useQueryParams();
   const { pathname } = useLocation();
@@ -43,24 +134,24 @@ function GuideLists() {
     },
   });
 
-  const Posts = useQuery({
-    queryKey: [
-      "TaxonomysPostsTOP",
-      {
-        slug,
-        queryParams,
-        pathname,
-        id: TaxonomyInfo?.id,
-      },
-    ],
-    queryFn: async () => {
-      const { data } = await PostsAPI.getPosts(
-        `page=1&per_page=100&categories=${TaxonomyInfo?.id}`
-      );
-      return data;
-    },
-    enabled: Boolean(slug && TaxonomyInfo),
-  });
+  // const Posts = useQuery({
+  //   queryKey: [
+  //     "TaxonomysPostsTOP",
+  //     {
+  //       slug,
+  //       queryParams,
+  //       pathname,
+  //       id: TaxonomyInfo?.id,
+  //     },
+  //   ],
+  //   queryFn: async () => {
+  //     const { data } = await PostsAPI.getPosts(
+  //       `page=1&per_page=100&categories=${TaxonomyInfo?.id}`
+  //     );
+  //     return data;
+  //   },
+  //   enabled: Boolean(slug && TaxonomyInfo),
+  // });
 
   const Tags = useQuery({
     queryKey: ["TaxonomyTags", TaxonomyInfo?.id],
@@ -112,18 +203,18 @@ function GuideLists() {
   });
   const Lists = formatArray.useInfiniteQuery(data?.pages);
 
-  useEffect(() => {
-    if (Posts?.data && Posts?.data.length > 0) {
-      let newQuicks = Posts?.data.filter((x) => x.acf.status);
-      if (newQuicks.length > 0) {
-        setQuicks(newQuicks);
-      } else {
-        setQuicks([]);
-      }
-    } else {
-      setQuicks([]);
-    }
-  }, [Posts?.data]);
+  // useEffect(() => {
+  //   if (Posts?.data && Posts?.data.length > 0) {
+  //     let newQuicks = Posts?.data.filter((x) => x.acf.status);
+  //     if (newQuicks.length > 0) {
+  //       setQuicks(newQuicks);
+  //     } else {
+  //       setQuicks([]);
+  //     }
+  //   } else {
+  //     setQuicks([]);
+  //   }
+  // }, [Posts?.data]);
 
   const [sentryRef, { rootRef }] = useInfiniteScroll({
     loading: isLoading,
@@ -209,11 +300,40 @@ function GuideLists() {
             </div>
           )}
         </div>
-        <div className="flex flex-col w-full gap-4 lg:gap-20 lg:flex-row">
-          {Quicks && Quicks.length > 0 && (
+        <div className="flex flex-col w-full">
+          <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
+            {isLoading &&
+              Array(15)
+                .fill()
+                .map((_, index) => (
+                  <div className="animate-pulse" key={index}>
+                    <div className="aspect-[180/101] bg-gray-300 rounded-xl"></div>
+                    <div className="pt-3">
+                      <div className="mb-2">
+                        <div className="w-full h-4 bg-gray-300 rounded-full"></div>
+                      </div>
+                      <div className="font-medium text-muted text-[13px]">
+                        <div className="h-2.5 bg-gray-300 rounded-full w-48"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            {!isLoading && (
+              <>
+                {Lists &&
+                  Lists.map((item, index) => (
+                    <div key={index} ref={sentryRef}>
+                      <ItemRender item={item} />
+                    </div>
+                  ))}
+              </>
+            )}
+          </div>
+
+          {/* {Quicks && Quicks.length > 0 && (
             <div className="h-full overflow-auto lg:w-[400px] lg:min-w-[400px] mt-6">
               <div className="pb-3.5 mb-3.5 border-b">
-                {Quicks.filter((x) => x.acf.status === "1")
+                {Quicks.filter((x) => x.acf.status === "2")
                   .sort((a, b) => a.acf.vi_tri - b.acf.vi_tri)
                   .map((item, index) => (
                     <div className="mb-3 last:mb-0" key={index}>
@@ -254,7 +374,7 @@ function GuideLists() {
                   Tình huống
                 </div>
                 <div>
-                  {Quicks.filter((x) => x.acf.status === "2")
+                  {Quicks.filter((x) => x.acf.status === "3")
                     .sort((a, b) => a.acf.vi_tri - b.acf.vi_tri)
                     .map((item, index) => (
                       <div
@@ -282,86 +402,16 @@ function GuideLists() {
                 </div>
               </div>
             </div>
-          )}
-          <div className="flex-1">
-            <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
-              {isLoading &&
-                Array(15)
-                  .fill()
-                  .map((_, index) => (
-                    <div className="animate-pulse" key={index}>
-                      <div className="aspect-[180/101] bg-gray-300 rounded-xl"></div>
-                      <div className="pt-3">
-                        <div className="mb-2">
-                          <div className="w-full h-4 bg-gray-300 rounded-full"></div>
-                        </div>
-                        <div className="font-medium text-muted text-[13px]">
-                          <div className="h-2.5 bg-gray-300 rounded-full w-48"></div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-              {!isLoading && (
-                <>
-                  {Lists &&
-                    Lists.map((item, index) => (
-                      <div
-                        className="block cursor-pointer"
-                        key={index}
-                        ref={sentryRef}
-                        onClick={() => {
-                          navigate({
-                            pathname: pathname,
-                            search: createSearchParams(
-                              omitBy(
-                                {
-                                  tag: queryParams.tag,
-                                  id: item.id,
-                                },
-                                isNil
-                              )
-                            ).toString(),
-                          });
-                        }}
-                      >
-                        <div className="aspect-[180/101]">
-                          <LazyLoadImage
-                            wrapperClassName="aspect-[180/101] !block"
-                            className="aspect-[180/101] h-full object-cover rounded-xl"
-                            effect="blur"
-                            src={`https://img.youtube.com/vi/${item?.acf?.id_video_youtube}/0.jpg`}
-                          />
-                        </div>
-                        <div className="pt-3">
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: item?.title?.rendered,
-                            }}
-                            className="text-[15px] leading-6 font-bold mb-1 line-clamp-2"
-                          ></div>
-                          <div className="font-medium text-muted text-[13px]">
-                            <span>
-                              {moment(item.date).format(
-                                "[Đăng lúc ] HH:mm, [Ngày] DD MMM yyyy"
-                              )}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                </>
-              )}
-            </div>
-          </div>
+          )} */}
         </div>
       </div>
-      {queryParams.id &&
+      {/* {queryParams.id &&
         createPortal(
           <AnimatePresence>
             <PickerVideo />
           </AnimatePresence>,
           document.body
-        )}
+        )} */}
     </>
   );
 }

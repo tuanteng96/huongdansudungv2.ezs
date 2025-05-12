@@ -68,6 +68,10 @@ function HeaderPage() {
 
   const arrTop = [
     {
+      Title: "Nhân viên",
+      Href: "/huong-dan/danh-sach-nhan-vien",
+    },
+    {
       Title: "Chấm công",
       Href: "/huong-dan/cong-ca?tag=150",
     },
@@ -98,7 +102,7 @@ function HeaderPage() {
   ];
 
   return (
-    <div className="h-[62px] border-b flex relative z-10">
+    <div className="h-[62px] md:h-[90px] border-b flex relative z-10">
       <div className="w-[200px] md:block hidden">
         <Link className="flex items-center justify-center h-full" to="/">
           <img
@@ -115,12 +119,12 @@ function HeaderPage() {
         <Bars4Icon className="w-7" />
       </div>
       <div className="relative flex-1 pl-5 pr-5 lg:pl-0">
-        <div className="relative flex items-center h-full">
+        <div className="relative flex flex-col items-center justify-center h-full">
           <div
             className={clsx(
-              "border flex rounded-3xl h-12 w-full transition relative",
-              isFocus && "border-primary",
-              isFocus ? "max-w-[600px]" : "lg:max-w-[200px]"
+              "border border-gray-300 flex rounded-3xl h-12 w-full transition relative",
+              // isFocus && "border-primary",
+              // isFocus ? "max-w-[600px]" : "lg:max-w-[200px]"
             )}
             ref={elRef}
           >
@@ -231,7 +235,7 @@ function HeaderPage() {
               <MagnifyingGlassIcon className="w-5 md:w-6" />
             </div>
           </div>
-          {!isFocus && (
+          {/* {!isFocus && (
             <div className="justify-end flex-1 gap-2.5 hidden lg:flex">
               {arrTop &&
                 arrTop.map((item, index) => (
@@ -249,14 +253,15 @@ function HeaderPage() {
                   </NavLink>
                 ))}
             </div>
-          )}
-          <div className="flex-wrap flex-1 gap-x-2.5 hidden">
+          )} */}
+          <div className="justify-center hidden w-full gap-3 mt-2 md:flex">
+            <div>Tìm kiếm phổ biến : </div>
             {arrTop &&
               arrTop.map((item, index) => (
                 <NavLink
                   className={({ isActive }) => {
                     return clsx(
-                      "text-[#6c7293] hover:text-primary transition-colors",
+                      "text-[#6c7293] hover:text-primary transition-colors underline",
                       isActive && "!text-primary"
                     );
                   }}

@@ -43,7 +43,7 @@ function ProviderLayout({ children }) {
         )}
       >
         <HeaderPage />
-        <div className="h-[calc(100%-62px)] flex overflow-hidden relative">
+        <div className="h-[calc(100%-62px)] md:h-[calc(100%-90px)] flex overflow-hidden relative">
           <SidebarPage />
           <div className="flex-1 h-full md:!translate-x-0 group-[.is-sidebar]:translate-x-[200px] transition-transform">
             {children}
