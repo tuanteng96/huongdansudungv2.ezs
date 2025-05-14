@@ -18,6 +18,7 @@ import useQueryParams from "_ezs/hooks/useQueryParams";
 import { clsx } from "clsx";
 import ModalVideo from "../../components/ModalVideo";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { PlayCircleIcon } from "@heroicons/react/24/outline";
 
 const ItemRender = ({ item }) => {
   let refMobile = useRef();
@@ -30,7 +31,7 @@ const ItemRender = ({ item }) => {
         onClick={() => {
           if (item?.acf?.app_id_video_youtube && item?.acf?.id_video_youtube) {
             Swal.fire({
-              title: "Xem hướng dẫn thao tác trên ?",
+              title: "Bạn đang thao tác trên ?",
               showDenyButton: true,
               showCancelButton: false,
               confirmButtonText: `<svg
@@ -64,7 +65,7 @@ App điện thoại`,
   />
 </svg>
 
-              Máy tính bảng
+              PC - Máy tính
             `,
               cancelButtonText: "Đóng",
               customClass: {
@@ -87,12 +88,20 @@ App điện thoại`,
         }}
       >
         <div>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: item?.title?.rendered,
-            }}
-            className="text-[15px] leading-[24px] font-medium mb-2 line-clamp-2"
-          ></div>
+          <div className="relative mb-2">
+            <div className="absolute left-0 top-px">
+              <PlayCircleIcon className="w-6 text-danger" />
+            </div>
+            <div
+              style={{
+                textIndent: "28px",
+              }}
+              dangerouslySetInnerHTML={{
+                __html: item?.title?.rendered,
+              }}
+              className="text-[15px] leading-[24px] font-medium line-clamp-2 min-h-[48px]"
+            ></div>
+          </div>
           <div
             className="text-muted text-[14px] font-light leading-6"
             dangerouslySetInnerHTML={{
@@ -190,8 +199,9 @@ function GuideLists() {
           queryParams.tag ? queryParams.tag : TaxonomyInfo?.id
         }`
       );
+
       return {
-        data: data,
+        data: [...(data || [])].sort((a, b) => a?.acf?.vi_tri - b?.acf?.vi_tri),
         Pi: pageParam,
         Totalpages,
       };
