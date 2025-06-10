@@ -99,7 +99,7 @@ App điện thoại`,
               dangerouslySetInnerHTML={{
                 __html: item?.title?.rendered,
               }}
-              className="text-[15px] leading-[24px] font-medium line-clamp-2 min-h-[48px]"
+              className="text-[15px] leading-[24px] line-clamp-2 min-h-[48px]"
             ></div>
           </div>
           <div
@@ -168,6 +168,7 @@ function GuideLists() {
       const { data } = await PostsAPI.getCategories(
         `parent=${TaxonomyInfo?.id}&per_page=50`
       );
+
       return data
         ? data.sort((a, b) => Number(a.acf.vi_tri) - Number(b.acf.vi_tri))
         : [];
@@ -191,27 +192,46 @@ function GuideLists() {
     },
   });
 
-  const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["TaxonomysList", { id: TaxonomyInfo?.id, queryParams }],
     queryFn: async ({ pageParam = 1 }) => {
-      const { data, Totalpages } = await PostsAPI.getPosts(
+      const { data } = await PostsAPI.getPosts(
         `page=${pageParam}&per_page=100&categories=${
           queryParams.tag ? queryParams.tag : TaxonomyInfo?.id
         }`
       );
+      let newData = [];
+      if (data && data.length > 0) {
+        for (let item of data) {
+          let TitleGroup = item?.acf?.group_title || "Chưa xác định";
+          let index = newData.findIndex((x) => x.TitleGroup === TitleGroup);
+          if (index > -1) {
+            newData[index].Items.push(item);
+          } else {
+            newData.push({
+              Items: [item],
+              TitleGroup: TitleGroup,
+              Index: TitleGroup === "Chưa xác định" ? 1 : 0,
+            });
+          }
+        }
+      }
 
-      return {
-        data: [...(data || [])].sort((a, b) => a?.acf?.vi_tri - b?.acf?.vi_tri),
-        Pi: pageParam,
-        Totalpages,
-      };
+      return newData
+        .map((x) => ({
+          ...x,
+          Items:
+            x.Items && x.Items.length > 0
+              ? x.Items.sort((a, b) => a?.acf?.vi_tri - b?.acf?.vi_tri)
+              : null,
+        }))
+        .sort((a, b) => a?.Index - b?.Index);
     },
     getNextPageParam: (lastPage, pages) => {
       return lastPage.Pi === lastPage.Totalpages ? undefined : lastPage.Pi + 1;
     },
     enabled: Boolean(TaxonomyInfo?.id),
   });
-  const Lists = formatArray.useInfiniteQuery(data?.pages);
 
   // useEffect(() => {
   //   if (Posts?.data && Posts?.data.length > 0) {
@@ -226,13 +246,6 @@ function GuideLists() {
   //   }
   // }, [Posts?.data]);
 
-  const [sentryRef, { rootRef }] = useInfiniteScroll({
-    loading: isLoading,
-    hasNextPage: hasNextPage,
-    onLoadMore: fetchNextPage,
-    //disabled: !!error,
-  });
-
   return (
     <>
       <Helmet>
@@ -243,10 +256,7 @@ function GuideLists() {
         </title>
       </Helmet>
 
-      <div
-        className="w-full h-full px-3 py-3 overflow-auto md:px-8 md:py-7"
-        ref={rootRef}
-      >
+      <div className="w-full h-full px-3 py-3 overflow-auto md:px-8 md:py-7">
         <div>
           <div className="flex text-xl font-bold md:text-2xl">
             {!Taxonomy?.isLoading && (
@@ -311,9 +321,9 @@ function GuideLists() {
           )}
         </div>
         <div className="flex flex-col w-full">
-          <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
-            {isLoading &&
-              Array(15)
+          {isLoading && (
+            <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5">
+              {Array(15)
                 .fill()
                 .map((_, index) => (
                   <div className="animate-pulse" key={index}>
@@ -328,12 +338,30 @@ function GuideLists() {
                     </div>
                   </div>
                 ))}
+            </div>
+          )}
+
+          <div>
             {!isLoading && (
               <>
-                {Lists &&
-                  Lists.map((item, index) => (
-                    <div key={index} ref={sentryRef}>
-                      <ItemRender item={item} />
+                {data &&
+                  data.map((group, idx) => (
+                    <div className="mt-6" key={idx}>
+                      {group.TitleGroup !== "Chưa xác định" && (
+                        <div className="flex mb-4">
+                          <div className="text-lg font-medium text-[#0087dd]">{idx + 1}. {group.TitleGroup}</div>
+                        </div>
+                      )}
+
+                      {group.Items.length > 0 && (
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5">
+                          {group.Items.map((item, index) => (
+                            <div key={index}>
+                              <ItemRender item={item} />
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
               </>

@@ -34,7 +34,7 @@
         "react-topbar-progress-indicator": "^4.1.1",
         "react-viewer": "^3.2.2",
         "slick-carousel": "^1.8.1",
-        "sweetalert2": "^11.21.0",
+        "sweetalert2": "^11.22.0",
         "vite-jsconfig-paths": "^2.0.1"
     },
     "devDependencies": {
